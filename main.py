@@ -16,6 +16,7 @@ import random
 from questions import QUESTIONS
 
 TIME_LIMIT_SECONDS = 15
+HIGH_SCORE_FILE = "highscore.txt"
 
 
 def display_question(question_data, question_number, total_questions):
@@ -170,12 +171,43 @@ def choose_category(questions):
 
         print("Invalid choice. Please enter a valid number from the list.")
 
+def load_high_score():
+    """
+    Reads the high score from the high score file.
+    Returns 0 if the file doesn't exist yet or is invalid.
+    """
+    try:
+        with open(HIGH_SCORE_FILE, "r") as file:
+            content = file.read().strip()
+            return int(content) if content else 0
+    except FileNotFoundError:
+        return 0
+    except ValueError:
+        return 0
+
+
+def save_high_score(score):
+    """
+    Saves the given score to the high score file.
+    """
+    with open(HIGH_SCORE_FILE, "w") as file:
+        file.write(str(score))
+
 def main():
     print("Welcome to the Mini Quiz App!")
+
+    high_score = load_high_score()
+    print(f"Current High Score: {high_score}")
 
     selected_questions = choose_category(QUESTIONS)
     final_score = run_quiz(selected_questions)
     display_final_score(final_score, len(selected_questions))
+
+    if final_score > high_score:
+        print(f"\nNew High Score! You beat the previous record of {high_score}!")
+        save_high_score(final_score)
+    else:
+        print(f"\nHigh Score remains: {high_score}")
 
 
 if __name__ == "__main__":
