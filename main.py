@@ -96,6 +96,10 @@ def display_final_score(score, total_questions):
     """
     Displays the final score and a performance message.
     """
+    if total_questions == 0:
+        print("\nNo questions were played.")
+        return
+
     percentage = (score / total_questions) * 100
     message = get_performance_message(percentage)
 
@@ -211,4 +215,7 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except KeyboardInterrupt:
+        print("\n\nQuiz interrupted. Thanks for playing!")
