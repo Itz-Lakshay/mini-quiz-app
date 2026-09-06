@@ -28,7 +28,6 @@ def display_question(question_data, question_number, total_questions):
     print(question_data["question"])
     print()
 
-    # options is a dictionary like {"A": "Stack", "B": "Queue", ...}
     for letter, option_text in question_data["options"].items():
         print(f"{letter}. {option_text}")
 
@@ -61,6 +60,36 @@ def check_answer(question_data, user_answer, current_score, question_number):
     return current_score
 
 
+def get_performance_message(percentage):
+    """
+    Returns a performance message based on the percentage of correct answers.
+    """
+    if percentage == 100:
+        return "Perfect score! You're a quiz master!"
+    elif percentage >= 80:
+        return "Excellent work!"
+    elif percentage >= 60:
+        return "Good job! Keep practicing."
+    elif percentage >= 40:
+        return "Not bad, but there's room for improvement."
+    else:
+        return "Keep learning — you'll do better next time!"
+
+
+def display_final_score(score, total_questions):
+    """
+    Displays the final score and a performance message.
+    """
+    percentage = (score / total_questions) * 100
+    message = get_performance_message(percentage)
+
+    print("\n" + "=" * 30)
+    print("QUIZ COMPLETE!")
+    print(f"Final Score: {score}/{total_questions} ({percentage:.1f}%)")
+    print(message)
+    print("=" * 30)
+
+
 def main():
     print("Welcome to the Mini Quiz App!")
 
@@ -71,6 +100,9 @@ def main():
     display_question(first_question, 1, len(QUESTIONS))
     answer = get_user_answer()
     score = check_answer(first_question, answer, score, 1)
+
+    # Temporary: testing final score display with just 1 question for now.
+    display_final_score(score, 1)
     # Looping through all questions will be added in Commit 6.
 
 
