@@ -9,8 +9,6 @@ This is a command-line quiz application that:
 - Tracks the score
 - Shows the correct answer when the user is wrong
 - Displays a final score and performance message
-
-Game logic will be added in upcoming commits.
 """
 
 from questions import QUESTIONS
@@ -90,20 +88,29 @@ def display_final_score(score, total_questions):
     print("=" * 30)
 
 
+def run_quiz(questions):
+    """
+    Runs the full quiz: loops through every question, displays it,
+    collects the user's answer, checks it, and tracks the score.
+
+    Returns the final score.
+    """
+    score = 0
+    total_questions = len(questions)
+
+    for index, question_data in enumerate(questions, start=1):
+        display_question(question_data, index, total_questions)
+        answer = get_user_answer()
+        score = check_answer(question_data, answer, score, index)
+
+    return score
+
+
 def main():
     print("Welcome to the Mini Quiz App!")
 
-    score = 0
-
-    # Temporary: just test with the first question for now.
-    first_question = QUESTIONS[0]
-    display_question(first_question, 1, len(QUESTIONS))
-    answer = get_user_answer()
-    score = check_answer(first_question, answer, score, 1)
-
-    # Temporary: testing final score display with just 1 question for now.
-    display_final_score(score, 1)
-    # Looping through all questions will be added in Commit 6.
+    final_score = run_quiz(QUESTIONS)
+    display_final_score(final_score, len(QUESTIONS))
 
 
 if __name__ == "__main__":
