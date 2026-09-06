@@ -41,15 +41,37 @@ def get_user_answer():
     return user_input.strip().upper()
 
 
+def check_answer(question_data, user_answer, current_score, question_number):
+    """
+    Checks whether the user's answer is correct, prints feedback in the
+    format: "Correct! | Score: X/Y" or shows the correct answer if wrong.
+
+    Returns the updated score.
+    """
+    correct_answer = question_data["answer"]
+
+    if user_answer == correct_answer:
+        current_score += 1
+        print(f"\nCorrect! | Score: {current_score}/{question_number}")
+    else:
+        correct_text = question_data["options"][correct_answer]
+        print(f"\nWrong! The correct answer was {correct_answer}. {correct_text}")
+        print(f"Score: {current_score}/{question_number}")
+
+    return current_score
+
+
 def main():
     print("Welcome to the Mini Quiz App!")
+
+    score = 0
 
     # Temporary: just test with the first question for now.
     first_question = QUESTIONS[0]
     display_question(first_question, 1, len(QUESTIONS))
     answer = get_user_answer()
-    print(f"\nYou answered: {answer}")
-    # Answer checking will be added in the next commit.
+    score = check_answer(first_question, answer, score, 1)
+    # Looping through all questions will be added in Commit 6.
 
 
 if __name__ == "__main__":
