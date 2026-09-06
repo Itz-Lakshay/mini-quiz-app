@@ -119,11 +119,49 @@ def run_quiz(questions):
 
     return score
 
+def get_available_categories(questions):
+    """
+    Returns a sorted list of unique categories found in the questions.
+    """
+    categories = set()
+    for question_data in questions:
+        categories.add(question_data["category"])
+    return sorted(categories)
+
+
+def choose_category(questions):
+    """
+    Asks the user to pick a category to play, or all categories.
+    Returns the filtered list of questions for the chosen category.
+    """
+    categories = get_available_categories(questions)
+
+    print("\nAvailable categories:")
+    for index, category in enumerate(categories, start=1):
+        print(f"{index}. {category}")
+    print(f"{len(categories) + 1}. All Categories")
+
+    while True:
+        choice = input("\nChoose a category (enter the number): ").strip()
+
+        if choice.isdigit():
+            choice_number = int(choice)
+
+            if 1 <= choice_number <= len(categories):
+                selected_category = categories[choice_number - 1]
+                return [q for q in questions if q["category"] == selected_category]
+
+            if choice_number == len(categories) + 1:
+                return questions
+
+        print("Invalid choice. Please enter a valid number from the list.")
+
 def main():
     print("Welcome to the Mini Quiz App!")
 
-    final_score = run_quiz(QUESTIONS)
-    display_final_score(final_score, len(QUESTIONS))
+    selected_questions = choose_category(QUESTIONS)
+    final_score = run_quiz(selected_questions)
+    display_final_score(final_score, len(selected_questions))
 
 
 if __name__ == "__main__":
