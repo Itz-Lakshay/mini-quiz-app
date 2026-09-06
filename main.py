@@ -30,12 +30,20 @@ def display_question(question_data, question_number, total_questions):
         print(f"{letter}. {option_text}")
 
 
-def get_user_answer():
+def get_user_answer(valid_options):
     """
-    Prompts the user for an answer and returns it as an uppercase letter.
+    Prompts the user for an answer and keeps asking until they enter
+    a valid option letter. Returns the answer as an uppercase letter.
+
+    valid_options: an iterable of valid letters, e.g. dict_keys(["A", "B", "C", "D"])
     """
-    user_input = input("\nYour answer: ")
-    return user_input.strip().upper()
+    while True:
+        user_input = input("\nYour answer: ").strip().upper()
+
+        if user_input in valid_options:
+            return user_input
+
+        print(f"Invalid input. Please enter one of: {', '.join(valid_options)}")
 
 
 def check_answer(question_data, user_answer, current_score, question_number):
@@ -100,11 +108,10 @@ def run_quiz(questions):
 
     for index, question_data in enumerate(questions, start=1):
         display_question(question_data, index, total_questions)
-        answer = get_user_answer()
+        answer = get_user_answer(question_data["options"].keys())
         score = check_answer(question_data, answer, score, index)
 
     return score
-
 
 def main():
     print("Welcome to the Mini Quiz App!")
