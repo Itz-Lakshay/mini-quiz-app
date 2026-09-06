@@ -11,6 +11,7 @@ This is a command-line quiz application that:
 - Displays a final score and performance message
 """
 
+import random
 from questions import QUESTIONS
 
 
@@ -101,12 +102,17 @@ def run_quiz(questions):
     Runs the full quiz: loops through every question, displays it,
     collects the user's answer, checks it, and tracks the score.
 
+    Questions are shuffled so each playthrough has a different order.
+
     Returns the final score.
     """
-    score = 0
-    total_questions = len(questions)
+    shuffled_questions = questions.copy()
+    random.shuffle(shuffled_questions)
 
-    for index, question_data in enumerate(questions, start=1):
+    score = 0
+    total_questions = len(shuffled_questions)
+
+    for index, question_data in enumerate(shuffled_questions, start=1):
         display_question(question_data, index, total_questions)
         answer = get_user_answer(question_data["options"].keys())
         score = check_answer(question_data, answer, score, index)
