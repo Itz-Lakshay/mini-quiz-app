@@ -11,8 +11,11 @@ This is a command-line quiz application that:
 - Displays a final score and performance message
 """
 
+import time
 import random
 from questions import QUESTIONS
+
+TIME_LIMIT_SECONDS = 15
 
 
 def display_question(question_data, question_number, total_questions):
@@ -47,21 +50,26 @@ def get_user_answer(valid_options):
         print(f"Invalid input. Please enter one of: {', '.join(valid_options)}")
 
 
-def check_answer(question_data, user_answer, current_score, question_number):
+def check_answer(question_data, user_answer, current_score, question_number, time_taken):
     """
-    Checks whether the user's answer is correct, prints feedback in the
-    format: "Correct! | Score: X/Y" or shows the correct answer if wrong.
+    Checks whether the user's answer is correct and within the time limit.
+    Prints feedback in the format: "Correct! | Score: X/Y", or shows the
+    correct answer if wrong or if the user ran out of time.
 
     Returns the updated score.
     """
     correct_answer = question_data["answer"]
+    ran_out_of_time = time_taken > TIME_LIMIT_SECONDS
 
-    if user_answer == correct_answer:
+    if user_answer == correct_answer and not ran_out_of_time:
         current_score += 1
         print(f"\nCorrect! | Score: {current_score}/{question_number}")
     else:
         correct_text = question_data["options"][correct_answer]
-        print(f"\nWrong! The correct answer was {correct_answer}. {correct_text}")
+        if ran_out_of_time:
+            print(f"\nTime's up! The correct answer was {correct_answer}. {correct_text}")
+        else:
+            print(f"\nWrong! The correct answer was {correct_answer}. {correct_text}")
         print(f"Score: {current_score}/{question_number}")
 
     return current_score
@@ -100,7 +108,8 @@ def display_final_score(score, total_questions):
 def run_quiz(questions):
     """
     Runs the full quiz: loops through every question, displays it,
-    collects the user's answer, checks it, and tracks the score.
+    collects the user's answer within a time limit, checks it, and
+    tracks the score.
 
     Questions are shuffled so each playthrough has a different order.
 
@@ -114,8 +123,13 @@ def run_quiz(questions):
 
     for index, question_data in enumerate(shuffled_questions, start=1):
         display_question(question_data, index, total_questions)
+        print(f"(You have {TIME_LIMIT_SECONDS} seconds to answer)")
+
+        start_time = time.time()
         answer = get_user_answer(question_data["options"].keys())
-        score = check_answer(question_data, answer, score, index)
+        time_taken = time.time() - start_time
+
+        score = check_answer(question_data, answer, score, index, time_taken)
 
     return score
 
